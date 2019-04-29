@@ -7,6 +7,15 @@ def letters():
     alphabet[0] = " "
     return alphabet
 
+def letter_generator():
+    """
+    Random letter generation (alphabet + space).
+    """
+    alphabet = letters()
+    letter_index = random.randint(0, 26)
+    letter = alphabet[letter_index]
+    return letter
+
 def phrase_generator(length):
     """
     Generate a random phrase of length from 27 letters
@@ -14,10 +23,37 @@ def phrase_generator(length):
     alphabet = letters()
     phrase = ""
     for i in range(length):
-        letter_index = random.randint(0, 26)
-        letter = alphabet[letter_index]
+        letter = letter_generator()
         phrase += letter
     return phrase
+
+def crossover(p1, p2):
+    """
+    For the time being we'll use the simplest version of crossover for text
+    which is to take some fraction of the genes from the first and the remainder
+    from the second phrase.
+    """
+    n = len(p1)
+    crossover_point = random.randint(0, n)
+    child = ""
+    for i in range(n):
+        if (i < crossover_point - 1):
+            child += p1[i]
+        else:
+            child += p2[i]
+    return child
+
+def mutation(phrase, probability):
+    n = len(phrase)
+    out_phrase = ""
+    for i in range(n):
+        p_activation = random.random()
+        if (p_activation < probability):
+            new_letter = letter_generator()
+            out_phrase += new_letter
+        else:
+            out_phrase += phrase[i]
+    return out_phrase
 
 def fitness(phrase, truth):
     """
@@ -40,11 +76,9 @@ def fitness(phrase, truth):
         score = float(score / n_phrase_letters)
     return score
 
-def selection(population, target_phrase, n_selection):
+def pop_random(lst):
     """
-    Selection of population based on fitness score of each generated phrase
-    with respect to target phrase
+    Randomly select and remove item from population
     """
-    for item in population:
-
-
+    idx = random.randrange(0, len(lst))
+    return lst.pop(idx)
